@@ -32,7 +32,7 @@ def menu(screen):
         r640x480.text = '[%s] 640x480' % ('X' if res=='640x480' else ' ')
         
     pgi = mopgi.PGI(screen, 400, 300)
-    title = mopgi.Label(pgi, pygame.Rect(150, 10, 100, 20), "SHLOC-Multiplayer-Backgammon")
+    title = mopgi.Label(pgi, pygame.Rect(150, 10, 100, 20), "P2PBG-Multiplayer-Backgammon")
 
     r1024x768 = mopgi.Button(pgi, pygame.Rect(25, 40, 100, 20), "", lambda: setres("1024x768"))
     r800x600 = mopgi.Button(pgi, pygame.Rect(150, 40, 100, 20), "", lambda: setres("800x600"))

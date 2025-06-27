@@ -40,7 +40,7 @@ class Widget(object):
     def onmouseleave(self):
         pass
     
-    def onkeydown(self, unicode, key, mod):
+    def onkeydown(self, str, key, mod):
         # has to be overloaded
         pass
 
@@ -124,9 +124,9 @@ class PGI:
             if w.rect.collidepoint(pos):
                 w.onmousebuttonup(pos, buttons)
 
-    def onkeydown(self, unicode, key, mod):
+    def onkeydown(self, str, key, mod):
         if (self.focus != -1):
-            self.widgets[self.focus].onkeydown(unicode, key, mod)
+            self.widgets[self.focus].onkeydown(str, key, mod)
 
     def rotate_focus(self):
         if (self.focus != -1):
@@ -156,7 +156,7 @@ class PGI:
                     self.rotate_focus()
                     self.update()
                 else:
-                    self.onkeydown(event.unicode, event.key, event.mod)
+                    self.onkeydown(event.str, event.key, event.mod)
                         
             if self.has_to_update:
                 self.paint()
@@ -172,9 +172,9 @@ class PGI:
       
 
 if __name__=='__main__':
-    import label
-    import button
-    import input
+    from . import label
+    from . import button
+    from . import input
 
     pygame.init()
     screen=pygame.display.set_mode((640, 480))

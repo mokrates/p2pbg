@@ -1,3 +1,4 @@
+from functools import reduce
 # the boardposition
 # [whites (npos, n), blacks (npos, n), [n_bar_white, n_bar_black]]
 # bar: npos=-1
@@ -27,7 +28,7 @@ class BgGame:
         
         white = dict(pos[0])
         black = dict(pos[1])
-        for i in xrange(24):
+        for i in range(24):
             white.setdefault(i, 0)
             black.setdefault(i, 0)
         bar = pos[2][:]
@@ -58,13 +59,13 @@ class BgGame:
 
             if (newpos >= 24):   # move out
                 if (bar[0] +
-                    reduce(lambda x,y:x+y, (white[x] for x in xrange(18))) != 0):  # still pieces around?
+                    reduce(lambda x,y:x+y, (white[x] for x in range(18))) != 0):  # still pieces around?
                     return False
                 else:  # can move out
                     if (newpos == 24):
                         white[npos]-=1
                     else:  # throw too high/wasting move
-                        if (reduce(lambda x,y:x+y, (white[x] for x in xrange(npos))) == 0):
+                        if (reduce(lambda x,y:x+y, (white[x] for x in range(npos))) == 0):
                             white[npos]-=1
                         else:
                             return False
@@ -80,7 +81,7 @@ class BgGame:
                     white[npos]-=1
                     white[newpos]+=1
 
-        return [white.items(), black.items(), bar]
+        return [list(white.items()), list(black.items()), bar]
                 
     @staticmethod
     def possible_move(pos, n):

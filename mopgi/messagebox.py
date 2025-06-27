@@ -1,6 +1,6 @@
-import mopgi
-import label
-import button
+from . import mopgi
+from . import label
+from . import button
 import pygame
 
 def MessageBox(screen, message, btn='OK'):

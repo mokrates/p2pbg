@@ -1,4 +1,4 @@
-import button
+from . import button
 
 class RadioButton(button.Button):
     def __init__(self, parent, rect, optiontext, ticked=False):

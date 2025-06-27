@@ -1,5 +1,5 @@
-import mopgi
-import label
+from . import mopgi
+from . import label
 import pygame
 from pygame.locals import *
 
@@ -25,7 +25,7 @@ class Button(label.Label):
         self.parent.update()
         self.parent.gen_event()
 
-    def onkeydown(self, unicode, key, mod):
+    def onkeydown(self, str, key, mod):
         if (key==K_SPACE or key == K_RETURN):
             self.action()
         self.parent.update()

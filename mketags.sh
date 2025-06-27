@@ -1,0 +1,1 @@
+etags.emacs *.py */*.py

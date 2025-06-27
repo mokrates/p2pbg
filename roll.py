@@ -1,5 +1,6 @@
 import random
 import hashlib
+from base64 import b64encode
 
 ALPHABET="0123456789abcdefghijklmnopqrstuvwxyz"   # 36 symbols. throws from 1-1 to 6-6
     
@@ -26,12 +27,12 @@ def randompermutation():
 
 def salt(n):
     res=''
-    for i in xrange(n):
+    for i in range(n):
         res+=ALPHABET[random.randint(0,len(ALPHABET)-1)]
     return res
 
 def hash(msg):
-    return hashlib.sha256(msg).digest().encode('base64').strip()
+    return b64encode(hashlib.sha256(msg.encode("utf8")).digest()).decode("utf8")
 
 class RollException(Exception):
     pass

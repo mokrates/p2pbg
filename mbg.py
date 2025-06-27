@@ -18,6 +18,7 @@ import roll
 import network
 import sound
 import configuration
+from functools import reduce
 
 ##################################################
 # how does the board work?
@@ -51,7 +52,7 @@ def paint_background():
         screen.blit(images['board'], (0,0))
     else:
         # untere seite
-        for i in xrange(3):
+        for i in range(3):
             pygame.draw.aalines(screen, boardcolor, True,
                                 [((w/15)*(2*i), h),
                                  ((w/15)*(2*i+1), h),
@@ -60,7 +61,7 @@ def paint_background():
                                 [((w/15)*(2*i+1), h),
                                  ((w/15)*(2*i+2), h),
                                  ((w/30)*(4*i+3), h-w/3)])
-        for i in xrange(3,6):
+        for i in range(3,6):
             pygame.draw.aalines(screen, boardcolor, True,
                                 [((w/15)*(2*i+1), h),
                                  ((w/15)*(2*i+2), h),
@@ -71,7 +72,7 @@ def paint_background():
                                 ((w/30)*(4*i+5), h-w/3)])
 
         # obere seite
-        for i in xrange(3):
+        for i in range(3):
             pygame.draw.polygon(screen, boardcolor,
                                 [((w/15)*(2*i), 0),
                                  ((w/15)*(2*i+1), 0),
@@ -81,7 +82,7 @@ def paint_background():
                                  ((w/15)*(2*i+2), 0),
                                  ((w/30)*(4*i+3), w/3)])
 
-        for i in xrange(3,6):
+        for i in range(3,6):
             pygame.draw.polygon(screen, boardcolor,
                                 [((w/15)*(2*i+1), 0),
                                  ((w/15)*(2*i+2), 0),
@@ -241,7 +242,7 @@ def anim_pointlist(fro, to, n):
     to_x, to_y = to
     fro_x, fro_y = fro
     dist_x, dist_y = (to_x - fro_x, to_y - fro_y)
-    return ((dist_x *i / n + fro_x, dist_y *i / n + fro_y) for i in xrange(n+1))
+    return ((dist_x *i / n + fro_x, dist_y *i / n + fro_y) for i in range(n+1))
 
 def display_turn(turn):
     col = turn^reverse_colors
@@ -282,35 +283,35 @@ def paintposition(pos, anim=2):
     # white pieces
     painted = 0
     for (npos, n) in pos[0]:
-        for x in xrange(n):
+        for x in range(n):
             paint_piece_xy(False, get_piece_npos(npos, x))
             painted+=1
 
-    for x in xrange(pos[2][0]): # bar white
+    for x in range(pos[2][0]): # bar white
         paint_piece_xy(False, get_piece_barpos(False, x))
         painted += 1
 
     if (anim==0): m=14
     else: m=15
             
-    for x in xrange(m-painted):  # pieces out
+    for x in range(m-painted):  # pieces out
         paint_piece_xy(False, get_piece_outpos(False, x))
         
     # black pieces
     painted = 0
     for (npos, n) in pos[1]:
-        for x in xrange(n):
+        for x in range(n):
             paint_piece_xy(True, get_piece_npos(npos, x))
             painted+=1
 
-    for x in xrange(pos[2][1]): # bar black
+    for x in range(pos[2][1]): # bar black
         paint_piece_xy(True, get_piece_barpos(True, x))
         painted += 1
 
     if (anim==1): m=14
     else: m=15
 
-    for x in xrange(m-painted):  # pieces out
+    for x in range(m-painted):  # pieces out
         paint_piece_xy(True, get_piece_outpos(True, x))
 
 def animatemove(pos, bw, fro, to):
@@ -329,7 +330,7 @@ def animatemove(pos, bw, fro, to):
     
     dpos = [dict(pos[0]), dict(pos[1]), pos[2]]
     dpos[bw][fro]-=1
-    pos = [dpos[0].items(), dpos[1].items(), pos[2]]
+    pos = [list(dpos[0].items()), list(dpos[1].items()), pos[2]]
     animpoints=anim_pointlist(get_piece_npos(fro, dpos[bw].setdefault(fro,0)), get_piece_npos(to, dpos[bw].setdefault(to,0)), 10)
     
     for (x,y) in animpoints:
@@ -375,13 +376,13 @@ def translate_mouse_pos(pos):
         if (field == 6): # bar
             point = -1
         elif (field < 6): # left side
-            point = 11 - field
-        elif (field < 13): # right side
             point = 12 - field
+        elif (field < 13): # right side
+            point = 13 - field
         else:  # out
             point = 24
             
-        return ('point', point)
+        return ('point', int(point))
 
     elif ( y > h-5*(w/15) ): # lower half
         if (field == 6): # bar
@@ -393,7 +394,7 @@ def translate_mouse_pos(pos):
         else:  # out
             point = 24
 
-        return ('point', point)
+        return ('point', int(point))
 
     else:  # middle
         return ('middle',)
@@ -496,7 +497,7 @@ def gameloop(isserver):
                 exit(1)
             throw = do_roll(False, network_wait)
             used = []
-        print("rolled %s" % str(throw))
+        print(("rolled %s" % str(throw)))
 
     if ((throw[0] > throw[1] and isserver) or
         (throw[1] > throw[0] and not isserver)):  # throw[0] is for the server
@@ -509,12 +510,12 @@ def gameloop(isserver):
     paint_everything()
 
     oldstate=state
-    print("newstate = %s" % state)
+    print(("newstate = %s" % state))
           
     while True:
         if (oldstate != state):
             oldstate = state
-            print("newstate = %s" % state)
+            print(("newstate = %s" % state))
             
         event = pygame.event.wait()
       
@@ -544,14 +545,14 @@ def gameloop(isserver):
                     moves = nconn.readline()
                     opposition = bg.turnposition(position)
                     for m in moves.split(":"):
-                        print("throw %s, used %s" %(str(throw), str(used)))
+                        print(("throw %s, used %s" %(str(throw), str(used))))
                         if (len(throw) == 0 or bg.possible_moves(opposition, throw) == False):
                             # no more moves possible
                             if (m != 'DONE'):
                                 error_window(['opponent', "move not terminated"])
                         else:
                             (npos, n) = [int(x) for x in m.split("/")]
-                            print("opponent-move: %s/%s" % (npos, n))
+                            print(("opponent-move: %s/%s" % (npos, n)))
                             opposition = bg.do_one_move(opposition, npos, n)
                             if (opposition == False):
                                 error_window(["opponent", "invalid move"])
@@ -585,7 +586,7 @@ def gameloop(isserver):
                 used = []
                 position = bg.position
                 paint_everything()
-                print turn, bg.possible_moves(position, throw)
+                print(turn, bg.possible_moves(position, throw))
                 if (bg.possible_moves(position, throw) == False):
                     mopgi.messagebox.MessageBox(screen, "No moves possible")
                     paint_everything()
@@ -611,7 +612,7 @@ def gameloop(isserver):
                         possible=True
                 if (possible):
                     chosenpiece=trpos[1]
-                    print("chosenpiece %s" % chosenpiece)
+                    print(("chosenpiece %s" % chosenpiece))
                     paint_box_npos(pygame.Color('red'), chosenpiece)
                     state='movepiece'
 
@@ -632,7 +633,7 @@ def gameloop(isserver):
                     move+=[(chosenpiece, n)]
                     sound.playsound('sounds/move.wav')
                     state = 'choosepiece'
-                    print turn, bg.possible_moves(position, throw)
+                    print(turn, bg.possible_moves(position, throw))
 
                 elif (trpos[0] == 'point' and (trpos[1]==24) and not (trpos[1]-chosenpiece in throw)):  # wasting move
                     if (reduce(lambda x,y:x+y, (c for (p, c) in position[0] if p<chosenpiece)) == 0): ## may do wasting move
@@ -648,7 +649,7 @@ def gameloop(isserver):
                                 paint_everything()
                                 sound.playsound('sounds/move.wav')
                                 state = 'choosepiece'
-                                print turn, bg.possible_moves(position, throw)
+                                print(turn, bg.possible_moves(position, throw))
 
                 if (reduce(lambda x,y: x+y, (c for (p, c) in (position[0]))) + position[2][0] == 0):  # no pieces on board / win!
                     mopgi.messagebox.MessageBox(screen, "YOU WIN!")
@@ -680,6 +681,7 @@ def gameloop(isserver):
                     old_trpos = trpos
                     paint_everything()
                     if (trpos[0] == 'point'):
+                        print(trpos)   ## TODO remove
                         npos = trpos[1]
                         paint_box_npos(pygame.Color('white'), npos)
                         for n in throw:
@@ -723,7 +725,7 @@ def load_images():
 
     if (os.path.exists("Dice")):
         images['use_dice'] = True
-        for i in xrange(1,7):
+        for i in range(1,7):
             images['diegreen-%s' % i] = pygame.transform.smoothscale(
                 pygame.image.load(os.path.join('Dice', 'dieWhite%s.png' % i)),
                 (w/15, w/15))

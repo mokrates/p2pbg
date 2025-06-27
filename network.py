@@ -1,6 +1,6 @@
 import socket
 import pygame
-import thread
+import _thread
 import threading
 
 import atexit
@@ -16,7 +16,7 @@ class NetworkConnection():
 
     def _readerthread(self):
         self.socket.setblocking(True)
-        c=self.socket.recv(1)   # too lazy to buffer ^^
+        c=self.socket.recv(1).decode("utf8")   # too lazy to buffer ^^
         
         while True:
             if (c==''):
@@ -31,14 +31,14 @@ class NetworkConnection():
                     return
                 
                 self.line_ready.set()
-                print("network RECV <- : %s" % self.line)
+                print(("network RECV <- : %s" % self.line))
                 pygame.event.post(pygame.event.Event(pygame.USEREVENT))  # wake the pygame loop
                 self.line_cleared.wait()
             else:
                 self.line += c
                 self.line_cleared.clear()
 
-            c=self.socket.recv(1)
+            c=self.socket.recv(1).decode("utf8")
 
     def _listenthread(self):
         (self.socket, self.peer) = self.lsocket.accept()
@@ -57,13 +57,13 @@ class NetworkConnection():
         self.lsocket.bind(('0.0.0.0', port))
         self.lsocket.listen(0)
         atexit.register(lambda: self.lsocket.close())
-        self.thread = thread.start_new_thread(self._listenthread, ())
+        self.thread = _thread.start_new_thread(self._listenthread, ())
         
     def connect(self, address):
         self.socket = socket.create_connection(address)
-        self.thread = thread.start_new_thread(self._readerthread, ())
+        self.thread = _thread.start_new_thread(self._readerthread, ())
     
     def send(self, line):
-        print("network SENT -> : %s" % line)
-        self.socket.send(str(line)+'\n')
+        print(("network SENT -> : %s" % line))
+        self.socket.send((str(line)+'\n').encode("utf8"))
         

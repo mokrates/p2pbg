@@ -1,4 +1,4 @@
-import mopgi
+from . import mopgi
 import pygame
 from pygame.locals import *
 
@@ -34,7 +34,7 @@ class SimpleInput(mopgi.Widget):
         self.have_focus = have_focus
         self.parent.update()
 
-    def onkeydown(self, unicode, key, mod):
+    def onkeydown(self, str, key, mod):
         if (key == K_BACKSPACE):
             self.text = self.text[:-1]
             self.parent.update()
@@ -44,7 +44,7 @@ class SimpleInput(mopgi.Widget):
                 self.text += clip.decode('ascii', 'replace').encode('ascii', 'replace')
             self.parent.update()
         else:
-            self.text += unicode
+            self.text += str
             self.parent.update()
 
     def _get_clipboard(self):

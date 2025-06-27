@@ -20,7 +20,7 @@ class Configuration:
     def __setitem__(self, key, value):
         self.config[key] = value
         f=open(self.configfile, "w")
-        for (key, value) in self.config.items():
+        for (key, value) in list(self.config.items()):
             f.write("%s=%s\n" % (key, value))
 
 config = Configuration()

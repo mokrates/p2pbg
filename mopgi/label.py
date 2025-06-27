@@ -1,4 +1,4 @@
-import mopgi
+from . import mopgi
 import pygame
 from pygame.locals import *
 
