@@ -156,7 +156,7 @@ class PGI:
                     self.rotate_focus()
                     self.update()
                 else:
-                    self.onkeydown(event.str, event.key, event.mod)
+                    self.onkeydown(event.unicode, event.key, event.mod)
                         
             if self.has_to_update:
                 self.paint()

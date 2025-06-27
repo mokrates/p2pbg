@@ -681,7 +681,6 @@ def gameloop(isserver):
                     old_trpos = trpos
                     paint_everything()
                     if (trpos[0] == 'point'):
-                        print(trpos)   ## TODO remove
                         npos = trpos[1]
                         paint_box_npos(pygame.Color('white'), npos)
                         for n in throw:
