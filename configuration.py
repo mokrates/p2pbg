@@ -17,6 +17,9 @@ class Configuration:
     def __getitem__(self, key):
         return self.config[key]
 
+    def get(self, key, value=None):
+        return self.config.get(key, value)
+
     def __setitem__(self, key, value):
         self.config[key] = value
         f=open(self.configfile, "w")

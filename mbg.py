@@ -106,6 +106,11 @@ def paint_box_npos(color, npos):
     xpos = npos - 12
     xpos_inverse = 11 - npos
 
+    if (npos == -1): # bar
+        pygame.draw.aalines(screen, color, True,
+                            [(6*(w/15), 0), (6*(w/15), h), (7*(w/15), h), (7*(w/15), 0)])
+        return
+        
     if (npos < 6):     x=(w/30) * (2*xpos_inverse + 2)
     elif (npos < 12):  x=(w/30) * (2*xpos_inverse)
     elif (npos < 18):  x=(w/30) * (2*xpos)
@@ -371,18 +376,18 @@ def translate_mouse_pos(pos):
     w=screen.get_width()
 
     (x,y) = pos
-    field = x/(w/15)
+    field = int(x/(w/15))
     if ( y< 5*(w/15) ):  # upper half
         if (field == 6): # bar
             point = -1
         elif (field < 6): # left side
-            point = 12 - field
+            point = 11 - field
         elif (field < 13): # right side
-            point = 13 - field
+            point = 12 - field
         else:  # out
             point = 24
             
-        return ('point', int(point))
+        return ('point', point)
 
     elif ( y > h-5*(w/15) ): # lower half
         if (field == 6): # bar
@@ -394,7 +399,7 @@ def translate_mouse_pos(pos):
         else:  # out
             point = 24
 
-        return ('point', int(point))
+        return ('point', point)
 
     else:  # middle
         return ('middle',)
@@ -548,6 +553,7 @@ def gameloop(isserver):
                         print(("throw %s, used %s" %(str(throw), str(used))))
                         if (len(throw) == 0 or bg.possible_moves(opposition, throw) == False):
                             # no more moves possible
+                            print("no moves possible")
                             if (m != 'DONE'):
                                 error_window(['opponent', "move not terminated"])
                         else:
@@ -770,6 +776,9 @@ if __name__ == '__main__':
     pygame.init()
     (SCREENRES_SX, SCREENRES_SY) = configuration.config['screenres'].split("x")
     screen=pygame.display.set_mode((int(SCREENRES_SX), int(SCREENRES_SY)))
+
+    random.seed(configuration.config.get('seed', None))
+    
     pygame.display.set_caption('P2PBG - Multiplayer Backgammon')
 
     load_images()
